@@ -1,0 +1,15 @@
+# vim: autoindent:expandtab:sw=2:ts=2
+---
+ec2:
+  region: us-east-1
+  zone: us-east-1a
+
+  instance:
+    id: i_ec2_100
+    name: i_ec2
+    image: ami-b70554c8
+    type: t3.micro
+  key:
+    name: key_secure_http_aws_api_gatweay
+    pri_filename: ./id_rsa_secure_http_aws_api_gateway
+    pub_filename: ./id_rsa_secure_http_aws_api_gateway.pub

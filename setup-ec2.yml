@@ -1,0 +1,59 @@
+# vim: autoindent:expandtab:sw=2:ts=2
+---
+- name: Setup all EC2 components.
+  hosts: localhost
+  become: no
+  tasks:
+  - name: Variables
+    include_vars:
+      file: vars/aws.yml
+      name: aws
+
+  # Going with a basic setup.  Use default VPC.
+  # Instance setup
+  - name: Create keypair
+    ec2_key:
+      state: present
+      name: "{{ aws.ec2.key.name }}"
+      region: "{{ aws.ec2.region }}"
+    register: key_out
+
+  - name: Create instance
+    ec2:
+      state: present
+      region: "{{ aws.ec2.region }}"
+      count: 1
+      id: "{{ aws.ec2.instance.id }}"
+      image: "{{ aws.ec2.instance.image }}"
+      instance_type: "{{ aws.ec2.instance.type }}"
+      key_name: "{{ aws.ec2.key.name }}"
+      termination_protection: no
+      zone: "{{ aws.ec2.zone }}"
+    register: instance_out
+
+  - name: Tag instance
+    ec2_tag:
+      state: present
+      region: "{{ aws.ec2.region }}"
+      resource: "{{ item }}"
+      tags:
+        Name: "{{ aws.ec2.instance.name }}"
+    with_items: "{{ instance_out.instance_ids }}"
+
+  - name: Wait for instance...
+    ec2:
+      state: running
+      region: "{{ aws.ec2.region }}"
+      instance_ids: "{{ item.id }}"
+      wait: yes
+    with_items: "{{ instance_out.instances }}"
+
+  - name: Set public_ip (fails if not available, probably instance offline)
+    set_fact:
+      public_ip: "{{ item.public_ip }}"
+    with_items: "{{ instance_out.instances }}"
+
+  - name: Write inventory file
+    copy:
+      content: "{{ public_ip }} ansible_user=ec2-user ansible_ssh_private_key_file={{ aws.ec2.key.pri_filename }}"
+      dest: .inventory

@@ -1,0 +1,4 @@
+.inventory
+id_rsa*
+*.retry
+*.swp

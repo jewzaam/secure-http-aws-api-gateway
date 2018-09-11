@@ -1,0 +1,6 @@
+# vim: autoindent:expandtab:sw=2:ts=2
+---
+- name: Setup all EC2 components.
+  hosts: all
+  roles:
+    - cloudalchemy.node-exporter
