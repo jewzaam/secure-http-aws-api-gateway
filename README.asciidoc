@@ -62,6 +62,10 @@ ansible-playbook install-node_exporter.yml -i .inventory
 curl http://`cat .inventory | cut -d' ' -f1`:9100/metrics
 ```
 
+== TODO
+
+Setup what is needed for the API Gateway configuration.  See https://docs.aws.amazon.com/apigateway/latest/developerguide/getting-started-with-private-integration.html
+
 = Troubleshoot
 
 == Can't SSH to VM
