@@ -56,6 +56,12 @@ ansible-playbook setup-ec2.yml
 ansible-playbook install-node_exporter.yml -i .inventory
 ```
 
+== Verify Install
+
+```
+curl http://`cat .inventory | cut -d' ' -f1`:9100/metrics
+```
+
 = Troubleshoot
 
 == Can't SSH to VM
