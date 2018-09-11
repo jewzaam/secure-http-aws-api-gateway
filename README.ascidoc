@@ -49,3 +49,22 @@ ansible-galaxy install cloudalchemy.node-exporter
 ```
 ansible-playbook setup-ec2.yml
 ```
+
+== Install Node-Exporter
+
+```
+ansible-playbook install-node_exporter.yml -i .inventory
+```
+
+= Troubleshoot
+
+== Can't SSH to VM
+
+Does your default Security Group allow port 22 inbound traffic?
+
+== Need to Recreate Stuff...
+
+1. Terminate EC2 instance
+1. Delete key pair
+1. Update `vars/aws.yml` value of `ec2.instance.id` to a new value
+1. Run `setup-ec2.yml` playbook

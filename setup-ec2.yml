@@ -9,12 +9,31 @@
       file: vars/aws.yml
       name: aws
 
+
+  - name: Create SSH key
+    command: "ssh-keygen -t rsa -f {{ aws.ec2.key.pri_filename }} -N ''"
+    args:
+      creates: "{{ aws.ec2.key.pri_filename }}"
+
   # Going with a basic setup.  Use default VPC.
+  
+  - name: Create Security Group
+    ec2_group:
+      state: present
+      region: "{{ aws.ec2.region }}"
+      name: "{{ aws.ec2.vpc.group.name }}"
+      description: "{{ aws.ec2.vpc.group.name }}"
+      rules: "{{ aws.ec2.vpc.group.rules }}"
+      tags:
+        Name: "{{ aws.ec2.vpc.group.name }}"
+    register: group_out
+
   # Instance setup
   - name: Create keypair
     ec2_key:
       state: present
       name: "{{ aws.ec2.key.name }}"
+      key_material: "{{ lookup('file', aws.ec2.key.pub_filename) }}"
       region: "{{ aws.ec2.region }}"
     register: key_out
 
@@ -23,6 +42,7 @@
       state: present
       region: "{{ aws.ec2.region }}"
       count: 1
+      group_id: "{{ group_out.group_id }}"
       id: "{{ aws.ec2.instance.id }}"
       image: "{{ aws.ec2.instance.image }}"
       instance_type: "{{ aws.ec2.instance.type }}"

@@ -5,11 +5,25 @@ ec2:
   zone: us-east-1a
 
   instance:
-    id: i_ec2_100
-    name: i_ec2
+    id: i_ec2_103
+    name: i_secure_http_aws_api_gateway
     image: ami-b70554c8
     type: t3.micro
   key:
-    name: key_secure_http_aws_api_gatweay
-    pri_filename: ./id_rsa_secure_http_aws_api_gateway
-    pub_filename: ./id_rsa_secure_http_aws_api_gateway.pub
+    name: key_secure_http_aws_api_gateway
+    pri_filename: ./.id_rsa_secure_http_aws_api_gateway
+    pub_filename: ./.id_rsa_secure_http_aws_api_gateway.pub
+  vpc:
+    group:
+      name: sg_secure_http_aws_api_gateway
+      rules:
+        - proto: tcp
+          ports:
+            - 22
+          cidr_ip: 0.0.0.0/0
+          rule_desc: ssh
+        - proto: tcp
+          ports:
+            - 9100
+          cidr_ip: 0.0.0.0/0
+          rule_desc: node-exporter inbound
