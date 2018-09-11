@@ -8,7 +8,7 @@ ec2:
     id: i_ec2_103
     name: i_secure_http_aws_api_gateway
     image: ami-b70554c8
-    type: t3.micro
+    type: t2.micro
   key:
     name: key_secure_http_aws_api_gateway
     pri_filename: ./.id_rsa_secure_http_aws_api_gateway
